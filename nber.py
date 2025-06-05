@@ -95,7 +95,7 @@ def execute_notebook(notebook, start_cell=None, end_cell=None):
         command = f"python3 {filename}"
         code = os.system(command)
         if code != 0:
-            print(f"Error executing {filename}. Exiting.")
+            print('\n', '>' * 10, f"Error executing {filename}. Exiting.", '\n')
             exit(1)
 
 
@@ -155,10 +155,10 @@ def clear_notebook(prefix):
 # region .... check version
 
 def check_version():
-    my_version = open('version.txt', 'r').read().strip()
+    nber_dir = os.path.dirname(os.path.abspath(__file__))
+    my_version = open(os.path.join(nber_dir, 'version.txt'), 'r').read().strip()
     # online get https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt
-    # raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
-    raw_version = '0.2.0'
+    raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
     if my_version != raw_version:
         print(f"Your version of nber ({my_version}) is different from the online version ({raw_version}).")
         print("Please update nber by running 'nber --update' or 'git pull origin main'.")
