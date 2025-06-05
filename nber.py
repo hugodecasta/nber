@@ -165,7 +165,6 @@ def check_version():
     if my_version != raw_version:
         print(f"Your version of nber ({my_version}) is different from the online version ({raw_version}).")
         print("Please update nber by running 'nber --update' or 'git pull origin main'.")
-        exit(1)
 
 
 # region .... update
