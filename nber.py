@@ -89,7 +89,10 @@ def execute_notebook(notebook, start_cell=None, end_cell=None):
             continue
         print("-" * 70, notebook_name, cell_number, file_info)
         command = f"python3 {filename}"
-        os.system(command)
+        code = os.system(command)
+        if code != 0:
+            print(f"Error executing {filename}. Exiting.")
+            exit(1)
 
 
 # region .... sep
