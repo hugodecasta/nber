@@ -18,6 +18,8 @@ def usage():
     print("      Insert a new cell and renumber subsequent cells automatically.")
     print("  --clear <notebook_prefix> [start_cell] [end_cell]")
     print("      Renumber notebook cells for a given prefix, optionally from a specific cell or range.")
+    print("  --update")
+    print("      Update nber to the latest version from the repository.")
     print()
     print("Examples:")
     print("  nber parseUBPhys_")
@@ -36,6 +38,8 @@ def usage():
     print("      Renumber from cell 1 to the end.")
     print("  nber --clear parseUBPhys_ 1 3")
     print("      Renumber from cell 1 to cell 3.")
+    print("  nber --update")
+    print("      Update nber to the latest version from the repository.")
     print()
     print("For more details, see the README.md.")
 
@@ -153,9 +157,10 @@ def clear_notebook(prefix):
 def check_version():
     my_version = open('version.txt', 'r').read().strip()
     # online get https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt
-    raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
+    # raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
+    raw_version = '0.2.0'
     if my_version != raw_version:
-        print(f"Your version ({my_version}) is different from the online version ({raw_version}).")
+        print(f"Your version of nber ({my_version}) is different from the online version ({raw_version}).")
         print("Please update nber by running 'nber --update' or 'git pull origin main'.")
         exit(1)
 
@@ -164,6 +169,7 @@ def check_version():
 def update():
     print("Updating nber...")
     os.system('git pull origin main')
+    exit(0)
 
 # region ----------------------------------------------------------------------------------- GATHER NOTEBOOKS
 
@@ -177,6 +183,7 @@ is_sep = False
 is_pushfrom = False
 is_clear = False
 is_update = False
+is_help = False
 
 first_arg = find_arg(1)
 
@@ -188,12 +195,23 @@ elif first_arg == '--clear':
     is_clear = True
 elif first_arg == '--update':
     is_update = True
+elif first_arg == '--help':
+    is_help = True
+
+is_exec = not (is_sep or is_pushfrom or is_clear or is_update or is_help)
 
 # region ----------------------------------------------------------------------------------- Execution
 
+# region .... update
+
+if is_update:
+    update()
+
+check_version()
+
 # region .... notebook exec
 
-if not is_sep and not is_pushfrom and not is_clear and not is_update:
+if is_exec:
     notebook_prefix = find_arg(1)
     start_cell = find_arg(2, None)
     end_cell = find_arg(3, None)
@@ -224,7 +242,7 @@ elif is_clear:
     prefix = find_arg(2)
     clear_notebook(prefix)
 
-# region .... update
+# region .... help
 
-elif is_update:
-    update()
+elif is_help:
+    usage()
