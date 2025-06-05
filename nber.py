@@ -1,7 +1,10 @@
 import os
 import sys
+import random
 
 # region ----------------------------------------------------------------------------------- UTILS
+
+nber_dir = os.path.dirname(os.path.abspath(__file__))
 
 # region .... usage
 
@@ -155,10 +158,10 @@ def clear_notebook(prefix):
 # region .... check version
 
 def check_version():
-    nber_dir = os.path.dirname(os.path.abspath(__file__))
     my_version = open(os.path.join(nber_dir, 'version.txt'), 'r').read().strip()
     # online get https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt
-    raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
+    r = random.randint(0, 1000000)
+    raw_version = os.popen(f'curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt?v={r}').read().strip()
     if my_version != raw_version:
         print(f"Your version of nber ({my_version}) is different from the online version ({raw_version}).")
         print("Please update nber by running 'nber --update' or 'git pull origin main'.")
@@ -168,7 +171,10 @@ def check_version():
 # region .... update
 def update():
     print("Updating nber...")
+    current_dir = os.getcwd()
+    os.chdir(nber_dir)
     os.system('git pull origin main')
+    os.chdir(current_dir)
     exit(0)
 
 # region ----------------------------------------------------------------------------------- GATHER NOTEBOOKS
