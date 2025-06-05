@@ -147,6 +147,11 @@ def clear_notebook(prefix):
             new_filename = f"{notebook_name}{actual_cell_number}_{file_info}"
             os.rename(filename, new_filename)
 
+# region .... check version
+
+
+def check_version():
+    my_version = open('version.txt', 'r').read().strip()
 
 # region ----------------------------------------------------------------------------------- GATHER NOTEBOOKS
 
