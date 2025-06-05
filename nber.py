@@ -147,11 +147,23 @@ def clear_notebook(prefix):
             new_filename = f"{notebook_name}{actual_cell_number}_{file_info}"
             os.rename(filename, new_filename)
 
-# region .... check version
 
+# region .... check version
 
 def check_version():
     my_version = open('version.txt', 'r').read().strip()
+    # online get https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt
+    raw_version = os.popen('curl -s https://raw.githubusercontent.com/hugodecasta/nber/refs/heads/main/version.txt').read().strip()
+    if my_version != raw_version:
+        print(f"Your version ({my_version}) is different from the online version ({raw_version}).")
+        print("Please update nber by running 'nber --update' or 'git pull origin main'.")
+        exit(1)
+
+
+# region .... update
+def update():
+    print("Updating nber...")
+    os.system('git pull origin main')
 
 # region ----------------------------------------------------------------------------------- GATHER NOTEBOOKS
 
@@ -164,6 +176,7 @@ notebooks = get_all_notebooks()
 is_sep = False
 is_pushfrom = False
 is_clear = False
+is_update = False
 
 first_arg = find_arg(1)
 
@@ -173,12 +186,14 @@ elif first_arg == '--push':
     is_pushfrom = True
 elif first_arg == '--clear':
     is_clear = True
+elif first_arg == '--update':
+    is_update = True
 
 # region ----------------------------------------------------------------------------------- Execution
 
 # region .... notebook exec
 
-if not is_sep and not is_pushfrom and not is_clear:
+if not is_sep and not is_pushfrom and not is_clear and not is_update:
     notebook_prefix = find_arg(1)
     start_cell = find_arg(2, None)
     end_cell = find_arg(3, None)
@@ -208,3 +223,8 @@ elif is_pushfrom:
 elif is_clear:
     prefix = find_arg(2)
     clear_notebook(prefix)
+
+# region .... update
+
+elif is_update:
+    update()
